@@ -108,7 +108,7 @@ function HeroCard({ role, hero, isRolling }) {
       ) : (
         <div className="hero-card__empty">
           <div className="hero-card__pulse" />
-          <p>{isRolling ? 'Rolling...' : 'Press roll to start'}</p>
+          <p>{isRolling ? 'Rolling...' : 'Ready'}</p>
         </div>
       )}
     </article>
@@ -120,7 +120,7 @@ function App() {
   const [assignments, setAssignments] = useState(() => emptyAssignments());
   const [previewAssignments, setPreviewAssignments] = useState(() => emptyAssignments());
   const [rolling, setRolling] = useState(false);
-  const [message, setMessage] = useState('Ready to roll the five lane slots.');
+  const [message, setMessage] = useState('Ready to roll.');
   const intervalRef = useRef(null);
   const timeoutRef = useRef(null);
   const previousAssignmentsRef = useRef(emptyAssignments());
@@ -150,7 +150,7 @@ function App() {
     }
 
     setRolling(true);
-    setMessage('Rolling unique heroes across all five roles...');
+    setMessage('Rolling...');
 
     if (intervalRef.current) {
       window.clearInterval(intervalRef.current);
@@ -176,7 +176,7 @@ function App() {
       setPreviewAssignments(finalAssignments);
       previousAssignmentsRef.current = finalAssignments;
       setRolling(false);
-      setMessage('Locked. No hero appears in more than one role.');
+      setMessage('Locked. No duplicates.');
     }, rollDurationMs);
   };
 
@@ -187,23 +187,19 @@ function App() {
       <section className="hero-panel">
         <div className="hero-panel__copy hero-panel__copy--bottom">
           <p className="eyebrow">Mobile Legends Roulette</p>
-          <h1>Pick 5 unique heroes for the lane roster.</h1>
-          <p className="lede">
-            A simple React roulette that pulls every hero from <strong>images</strong> and rolls
-            one hero per role: Jungler, Gold Lane, EXP Lane, Roaming, and Mid Lane.
-          </p>
-
+          <h1>5 Man Party Play</h1>
           <div className="stats-row">
             <div className="stat-chip">
               <span className="stat-chip__label">Rule</span>
-              <strong>No duplicate hero</strong>
+              <strong>Unique hero for every lane</strong>
             </div>
+
+            <button className="roll-button" type="button" onClick={handleRoll} disabled={rolling || roster.length < ROLES.length}>
+              {rolling ? 'Rolling...' : 'Roll'}
+            </button>
           </div>
 
           <div className="actions-row">
-            <button className="roll-button" type="button" onClick={handleRoll} disabled={rolling || roster.length < ROLES.length}>
-              {rolling ? 'Rolling...' : 'Roll Heroes'}
-            </button>
             <p className="status-copy">{message}</p>
           </div>
         </div>
@@ -219,10 +215,6 @@ function App() {
           ))}
         </div>
       </section>
-
-      <footer className="footer-note">
-        Loaded from the roster in source.html and sampled without replacement.
-      </footer>
     </main>
   );
 }
